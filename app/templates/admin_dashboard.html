@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_title }} - Admin Control Center</title>
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/admin.css">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+        <div class="brand-box">
+            <div class="brand-icon">
+                <i class="fas fa-boxes-packing"></i>
+            </div>
+            <div class="brand-text">
+                <h2>SPX SMART KHO</h2>
+                <span>AI & IoT LOGISTICS</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item active" data-tab="tab-overview">
+                <i class="fas fa-chart-pie"></i>
+                <span>Tổng quan Hệ thống</span>
+            </li>
+            <li class="nav-item" data-tab="tab-packages">
+                <i class="fas fa-barcode"></i>
+                <span>Quản lý Kiện hàng</span>
+            </li>
+            <li class="nav-item" data-tab="tab-map">
+                <i class="fas fa-map-location-dot"></i>
+                <span>Sơ đồ Kho & Ô kệ</span>
+            </li>
+            <li class="nav-item" data-tab="tab-robots">
+                <i class="fas fa-robot"></i>
+                <span>Đội xe Robot AMR</span>
+            </li>
+            <li class="nav-item" data-tab="tab-users">
+                <i class="fas fa-user-shield"></i>
+                <span>Quản trị Người dùng</span>
+            </li>
+            <li class="nav-item" data-tab="tab-audit">
+                <i class="fas fa-shield-halved"></i>
+                <span>Nhật ký An ninh (Audit)</span>
+            </li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="user-avatar">NVT</div>
+            <div class="user-info">
+                <div class="name">{{ admin_name }}</div>
+                <div class="role">{{ admin_role }}</div>
+            </div>
+            <a href="#" style="color: var(--text-dim); text-decoration: none;" title="Đăng xuất">
+                <i class="fas fa-right-from-bracket"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-wrapper">
+        
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="page-title">
+                <h1 id="currentTabTitle">Tổng quan Hệ thống</h1>
+                <p>Trung tâm chỉ huy & Điều phối Kho thông minh bằng Trí tuệ nhân tạo (AI Engine)</p>
+            </div>
+            <div class="header-actions">
+                <div class="live-badge">
+                    <div class="pulse-dot"></div>
+                    <span>IoT Realtime Connected</span>
+                </div>
+                <button class="btn-action" onclick="location.reload()">
+                    <i class="fas fa-rotate"></i>
+                    <span>Làm mới</span>
+                </button>
+                <button class="btn-action btn-primary" onclick="alert('Hệ thống đang hoạt động tối ưu. Mô hình AI chuẩn đoán không có sự cố nghẽn mạng!')">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    <span>Tối ưu hóa AI</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- ==================== TAB 1: TỔNG QUAN (DASHBOARD) ==================== -->
+        <section id="tab-overview" class="tab-pane active">
+            
+            <!-- 5 Thẻ KPI Thống Kê -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Tổng Kiện Hàng Lưu Kho</span>
+                        <div class="kpi-icon-wrap"><i class="fas fa-box-archive"></i></div>
+                    </div>
+                    <div class="kpi-val" id="kpiTotalPackages">--</div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-trend up"><i class="fas fa-arrow-trend-up"></i> +12.4%</span>
+                        <span class="kpi-sub">so với tuần trước</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Tiếp Nhận Hôm Nay</span>
+                        <div class="kpi-icon-wrap"><i class="fas fa-dolly"></i></div>
+                    </div>
+                    <div class="kpi-val" id="kpiReceivedToday">--</div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-trend up"><i class="fas fa-check-circle"></i> Đạt 98%</span>
+                        <span class="kpi-sub">chỉ tiêu ngày</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Đã Xuất Đi Hub Đích</span>
+                        <div class="kpi-icon-wrap"><i class="fas fa-truck-fast"></i></div>
+                    </div>
+                    <div class="kpi-val" id="kpiDispatchedToday">--</div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-trend up"><i class="fas fa-bolt"></i> 100% On-time</span>
+                        <span class="kpi-sub">xuất kho đúng hạn</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Tỷ Lệ Lấp Đầy Ô Kệ</span>
+                        <div class="kpi-icon-wrap"><i class="fas fa-cubes"></i></div>
+                    </div>
+                    <div class="kpi-val" id="kpiOccupancyRate">--%</div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-trend"><i class="fas fa-warehouse"></i> 20 Ô Kệ</span>
+                        <span class="kpi-sub">Zone A, B, C</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Robot AMR Tự Hành</span>
+                        <div class="kpi-icon-wrap"><i class="fas fa-robot"></i></div>
+                    </div>
+                    <div class="kpi-val" id="kpiActiveRobots">--</div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-trend up"><i class="fas fa-microchip"></i> AI Path</span>
+                        <span class="kpi-sub">Thuật toán A*</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid: Live 2D Map & AI Alerts -->
+            <div class="content-grid-2col">
+                <!-- Panel Live Map Kho -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-compass"></i> Sơ Đồ Kho & Robot AMR Vận Hành Thời Gian Thực</h3>
+                        <span style="font-size:12px; color:var(--text-muted);"><i class="fas fa-eye"></i> Live Simulation</span>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="warehouseCanvas"></canvas>
+                        <div class="canvas-legend">
+                            <div class="legend-item"><span class="legend-color" style="background:#00f2fe;"></span> Robot AMR</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#38bdf8;"></span> Băng chuyền IoT</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#10b981;"></span> Ô kệ có hàng</div>
+                            <div class="legend-item"><span class="legend-color" style="background:#ef4444;"></span> Cửa xuất xe tải</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel AI Recommendations & Cảnh Báo -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-brain"></i> AI Decision Engine</h3>
+                        <span class="badge" style="background:rgba(0,242,254,0.15); color:#00f2fe;">Vận hành tự động</span>
+                    </div>
+                    <div class="alerts-list" id="aiAlertsList">
+                        <!-- Tự động nạp qua JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid 2 Biểu Đồ Phân Tích -->
+            <div class="content-grid-2col">
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-chart-line"></i> Lưu Lượng Kiện Hàng Trong Ngày (Hàng Giờ)</h3>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-chart-pie"></i> Phân Bổ Hàng Hóa Theo Zone Lưu Trữ</h3>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="zonesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: QUẢN LÝ KIỆN HÀNG ==================== -->
+        <section id="tab-packages" class="tab-pane">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><i class="fas fa-boxes-stacked"></i> Danh Sách Kiện Hàng Trong Hệ Thống</h3>
+                    <button class="btn-action btn-primary" onclick="alert('Chức năng Quét Barcode tiếp nhận lô hàng mới')">
+                        <i class="fas fa-barcode"></i> Quét Barcode Mới
+                    </button>
+                </div>
+
+                <div class="table-filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="fas fa-magnifying-glass"></i>
+                        <input type="text" id="packageSearchInput" class="search-input" placeholder="Tìm theo Mã Kiện, Barcode, Vận đơn...">
+                    </div>
+                    <div class="filter-pills">
+                        <button class="pill-btn active" data-status="All">Tất cả</button>
+                        <button class="pill-btn" data-status="Received">Received (Đã nhận)</button>
+                        <button class="pill-btn" data-status="Sorted">Sorted (Đã phân loại)</button>
+                        <button class="pill-btn" data-status="Stored">Stored (Trong kho)</button>
+                        <button class="pill-btn" data-status="Dispatched">Dispatched (Đã xuất)</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Kiện</th>
+                                <th>Mã Vận Đơn</th>
+                                <th>Trọng Lượng</th>
+                                <th>Trạng Thái</th>
+                                <th>Loại Hàng</th>
+                                <th>Ô Kệ Lưu Trữ</th>
+                                <th>Cổng IoT</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packagesTableBody">
+                            <!-- JS nạp -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: SƠ ĐỒ KHO & Ô KỆ ==================== -->
+        <section id="tab-map" class="tab-pane">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><i class="fas fa-warehouse"></i> Quản Lý Mặt Bằng Kho & Sức Chứa (Storage Locations)</h3>
+                    <span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">3 Zone - 20 Vị Trí</span>
+                </div>
+                <p style="color:var(--text-muted); font-size:13px;">
+                    Mô hình hóa không gian 3 chiều của kho logistics. Hệ thống AI tự động phân bổ vị trí tối ưu dựa trên tần suất xuất hàng (Fast-moving goods gần cửa xuất, Heavy goods tầng dưới).
+                </p>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin-top:10px;">
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:16px;">
+                        <h4 style="color:#38bdf8; margin-bottom:10px;"><i class="fas fa-layer-group"></i> Zone A - Hàng Tiêu Chuẩn</h4>
+                        <p style="font-size:12px; color:var(--text-muted);">Sức chứa tối đa: 300 kg/ô kệ. Gồm 10 vị trí lưu trữ nhanh (A-01 đến A-10).</p>
+                        <div style="margin-top:12px; font-weight:700; color:#10b981;">Tình trạng: 6/10 Đã lấp đầy (60%)</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:16px;">
+                        <h4 style="color:#f59e0b; margin-bottom:10px;"><i class="fas fa-weight-hanging"></i> Zone B - Hàng Cồng Kềnh</h4>
+                        <p style="font-size:12px; color:var(--text-muted);">Sức chứa tối đa: 800 kg/ô kệ. Dành cho kiện hàng lớn (B-01 đến B-06).</p>
+                        <div style="margin-top:12px; font-weight:700; color:#f59e0b;">Tình trạng: 4/6 Đã lấp đầy (66.7%)</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-glass); border-radius:var(--radius-md); padding:16px;">
+                        <h4 style="color:#a855f7; margin-bottom:10px;"><i class="fas fa-gem"></i> Zone C - Hàng Giá Trị Cao</h4>
+                        <p style="font-size:12px; color:var(--text-muted);">Khu vực kiểm soát camera an ninh 24/7 và khóa số (C-01 đến C-04).</p>
+                        <div style="margin-top:12px; font-weight:700; color:#a855f7;">Tình trạng: 2/4 Đã lấp đầy (50%)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: ĐỘI XE ROBOT AMR ==================== -->
+        <section id="tab-robots" class="tab-pane">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><i class="fas fa-robot"></i> Quản Lý Đội Xe AMR (Autonomous Mobile Robots)</h3>
+                    <button class="btn-action btn-primary" onclick="alert('Đã đồng bộ mạng lưới Robot với AI Pathfinding Controller!')">
+                        <i class="fas fa-signal"></i> Quét Tín Hiệu Đội Xe
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Robot</th>
+                                <th>Tên Hiển Thị</th>
+                                <th>Mức Pin</th>
+                                <th>Tọa Độ Hiện Tại</th>
+                                <th>Trạng Thái</th>
+                                <th>Nhiệm Vụ Đang Thực Hiện</th>
+                                <th>Điều Khiển</th>
+                            </tr>
+                        </thead>
+                        <tbody id="robotsTableBody">
+                            <!-- JS nạp -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: QUẢN TRỊ NGƯỜI DÙNG ==================== -->
+        <section id="tab-users" class="tab-pane">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><i class="fas fa-users-gear"></i> Danh Sách Tài Khoản & Phân Quyền (RBAC)</h3>
+                    <button class="btn-action btn-primary" onclick="alert('Mở form tạo người dùng mới')">
+                        <i class="fas fa-user-plus"></i> Thêm Người Dùng
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Nhân Sự</th>
+                                <th>Tên Đăng Nhập</th>
+                                <th>Họ Và Tên</th>
+                                <th>Vai Trò (Role)</th>
+                                <th>Trạng Thái</th>
+                                <th>Ngày Tạo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- JS nạp -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: NHẬT KÝ AN NINH ==================== -->
+        <section id="tab-audit" class="tab-pane">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><i class="fas fa-clipboard-list"></i> Nhật Ký Kiểm Toán An Ninh (Audit Trail - NFR-SEC-05)</h3>
+                    <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa;">Immutable Log</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Log</th>
+                                <th>Tài Khoản Thao Tác</th>
+                                <th>API Endpoint</th>
+                                <th>Địa Chỉ IP</th>
+                                <th>Mô Tả Hành Động</th>
+                                <th>Mã HTTP</th>
+                                <th>Thời Gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <!-- JS nạp -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAL XEM CHI TIẾT TRUY VẾT ==================== -->
+    <div class="modal-backdrop" id="timelineModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="timelinePackageTitle"><i class="fas fa-route" style="color:var(--primary);"></i> Lộ trình di chuyển kiện hàng</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div id="timelineContent">
+                <!-- JS nạp timeline -->
+            </div>
+            <div style="display:flex; justify-content:flex-end;">
+                <button class="btn-action" onclick="closeModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="/static/js/warehouse_canvas.js"></script>
+    <script src="/static/js/admin_dashboard.js"></script>
+</body>
+</html>
